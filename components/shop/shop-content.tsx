@@ -38,7 +38,7 @@ export function ShopContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-4 sm:py-8 md:py-12 lg:px-8">
+      <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 sm:py-8 md:py-12 lg:px-8">
         {/* Filters */}
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:mb-10 md:flex-row md:items-center md:justify-between">
           {/* Categories */}
@@ -48,7 +48,7 @@ export function ShopContent() {
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
-                className="rounded-full px-4 py-2 whitespace-nowrap"
+                className="whitespace-nowrap rounded-full px-4 py-2"
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -70,7 +70,7 @@ export function ShopContent() {
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
