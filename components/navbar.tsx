@@ -10,7 +10,6 @@ import {
   User,
   LogOut,
   UserCircle,
-  Store,
   ShoppingCart,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { useUser } from "@/hooks/use-user"
+import { useCart } from "@/lib/cart-store" // ✅ ADDED
 import { toast } from "sonner"
 
 const navLinks = [
@@ -40,6 +40,8 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false)
   const { user, isLoading, mutate } = useUser()
 
+  const { count } = useCart() // ✅ ADDED
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -54,7 +56,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
-        
+
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex size-9 items-center justify-center rounded-full bg-primary">
@@ -86,15 +88,21 @@ export function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2">
 
-          {/* Cart */}
-          <Link href="/cart">
+          {/* ✅ CART WITH BADGE */}
+          <Link href="/cart" className="relative">
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground relative"
             >
               <ShoppingCart className="size-5" />
             </Button>
+
+            {count > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white">
+                {count}
+              </span>
+            )}
           </Link>
 
           {/* User */}

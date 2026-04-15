@@ -18,19 +18,21 @@ function getInitialState(): CartState {
   if (typeof window === "undefined") {
     return { items: [] }
   }
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       return JSON.parse(stored)
     }
   } catch {
-    // ignore
+    // ignore localStorage parse errors
   }
+
   return { items: [] }
 }
 
 let state: CartState = { items: [] }
-let listeners: Set<() => void> = new Set()
+const listeners: Set<() => void> = new Set()
 
 function emitChange() {
   for (const listener of listeners) {
@@ -48,6 +50,7 @@ export function addToCart(product: Product, quantity = 1) {
   const existingIndex = state.items.findIndex(
     (item) => item.product.id === product.id
   )
+
   if (existingIndex >= 0) {
     state = {
       items: state.items.map((item, i) =>
@@ -61,6 +64,7 @@ export function addToCart(product: Product, quantity = 1) {
       items: [...state.items, { product, quantity }],
     }
   }
+
   persist()
   emitChange()
 }
@@ -69,6 +73,7 @@ export function removeFromCart(productId: string) {
   state = {
     items: state.items.filter((item) => item.product.id !== productId),
   }
+
   persist()
   emitChange()
 }
@@ -78,11 +83,13 @@ export function updateQuantity(productId: string, quantity: number) {
     removeFromCart(productId)
     return
   }
+
   state = {
     items: state.items.map((item) =>
       item.product.id === productId ? { ...item, quantity } : item
     ),
   }
+
   persist()
   emitChange()
 }
@@ -108,7 +115,6 @@ function getServerSnapshot(): CartState {
   return serverSnapshot
 }
 
-// Initialize from localStorage on client
 if (typeof window !== "undefined") {
   state = getInitialState()
 }
@@ -121,6 +127,7 @@ export function useCart() {
   )
 
   const count = cartState.items.reduce((sum, item) => sum + item.quantity, 0)
+
   const total = cartState.items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -139,7 +146,8 @@ export function useCart() {
       []
     ),
     updateQuantity: useCallback(
-      (productId: string, quantity: number) => updateQuantity(productId, quantity),
+      (productId: string, quantity: number) =>
+        updateQuantity(productId, quantity),
       []
     ),
     clearCart: useCallback(() => clearCart(), []),
