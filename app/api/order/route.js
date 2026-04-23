@@ -36,7 +36,27 @@ export async function POST(req) {
       createdAt: new Date(),
     });
 
-    // Setup email
+    // ================== ✅ WHATSAPP MESSAGE (FOR FRONTEND) ==================
+
+    const whatsappMessage = `🛒 New Order Received
+
+Name: ${name}
+Email: ${email || "Not provided"}
+Phone: ${phone}
+Address: ${address}
+
+Items:
+${items
+  .map(
+    (item) =>
+      `- ${item.productName} x ${item.quantity} = ₹${item.subtotal}`
+  )
+  .join("\n")}
+
+Total Amount: ₹${totalAmount}`;
+
+    // ================== ✅ EMAIL (UNCHANGED) ==================
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -45,7 +65,6 @@ export async function POST(req) {
       },
     });
 
-    // Format items
     const itemsText = items
       .map(
         (item) =>
@@ -53,7 +72,6 @@ export async function POST(req) {
       )
       .join("\n");
 
-    // Send email
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
@@ -73,7 +91,14 @@ Total Amount: ₹${totalAmount}
       `,
     });
 
-    return new Response("✅ Order placed!", { status: 200 });
+    // ✅ send message back to frontend
+    return new Response(
+      JSON.stringify({
+        success: true,
+        whatsappMessage,
+      }),
+      { status: 200 }
+    );
   } catch (err) {
     console.error("ORDER API ERROR:", err);
     return new Response(`❌ Error placing order: ${err.message}`, {

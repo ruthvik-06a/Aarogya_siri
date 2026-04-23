@@ -50,6 +50,7 @@ export function OrderModal({ product, open, onOpenChange }: OrderModalProps) {
     setSubmitting(true)
 
     try {
+      // 1. Send email (existing functionality)
       await sendOrderEmail({
         customerName: formData.name,
         customerEmail: formData.email,
@@ -60,9 +61,44 @@ export function OrderModal({ product, open, onOpenChange }: OrderModalProps) {
         quantity,
         totalAmount: total,
       })
+
+      // 2. Send to API and open WhatsApp (new functionality)
+      const orderData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        items: [
+          {
+            productName: product.name,
+            quantity: quantity,
+            subtotal: total,
+          },
+        ],
+        totalAmount: total,
+      }
+
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      })
+
+      const data = await res.json()
+
+      if (data.success) {
+        const url = `https://wa.me/919448862175?text=${encodeURIComponent(
+          data.whatsappMessage
+        )}`
+        window.open(url, "_blank")
+      }
+
       setSuccess(true)
-      toast.success("Order placed successfully!")
-    } catch {
+      toast.success("Order placed successfully! Check your email and WhatsApp.")
+    } catch (error) {
+      console.error("Order submission error:", error)
       toast.error("Failed to place order. Please try again.")
     } finally {
       setSubmitting(false)
@@ -81,7 +117,7 @@ export function OrderModal({ product, open, onOpenChange }: OrderModalProps) {
               Order Placed!
             </h2>
             <p className="text-muted-foreground">
-              Thank you for your order. We will contact you shortly to confirm delivery details.
+              Thank you for your order. Check your email and WhatsApp for confirmation.
             </p>
             <div className="mt-2 rounded-lg bg-secondary p-4 text-left">
               <p className="text-sm text-muted-foreground">Order Summary</p>
