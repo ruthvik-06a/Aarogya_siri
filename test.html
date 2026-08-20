@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Order</title>
+</head>
+<body>
+
+<h2>Test Order System</h2>
+
+<button onclick="sendOrder()">Place Test Order</button>
+
+<script>
+function sendOrder() {
+  fetch("http://localhost:5000/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: "Ruthvik",
+      phone: "9999999999",
+      address: "Bangalore",
+      product: "Organic Soap",
+      price: 199
+    })
+  })
+  .then(res => res.text())
+  .then(data => {
+    alert(data);
+    console.log(data);
+  })
+  .catch(err => console.error(err));
+}
+</script>
+
+</body>
