@@ -258,7 +258,7 @@ export const products: Product[] = [
     originalPrice: 19,
     description: "Light and nutritious kama kasturi seeds. Ideal for fasting and everyday meals.",
     longDescription: "Kama Kasturi Seeds are rich in nutrients and are known for their high content of omega-3 fatty acids, a type of polyunsaturated fatty acid beneficial for heart health. Our organic kama kasturi seeds are cold-pressed to retain their nutritional value and natural flavor.",
-    image: "/images/products/biscuit.png",
+    image: "/images/products/Biscuit.png",
     category: "Seeds",
     rating: 4.4,
     reviews: 45,
